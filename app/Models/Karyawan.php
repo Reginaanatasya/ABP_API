@@ -17,7 +17,7 @@ class Karyawan extends Model implements Authenticatable
     public $timestamps = false;
 
     // Add any additional model properties or methods here
-
+   
     // Implement the methods from the Authenticatable contract
     public function getAuthIdentifierName()
     {

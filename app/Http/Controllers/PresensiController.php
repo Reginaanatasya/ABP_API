@@ -47,28 +47,33 @@ class PresensiController extends Controller
     {
       $nik = (string) $request->input('nik');
       $lokasi_out = (string) $request->input('lokasi_out');
- 
+
       // Set the tgl_presensi to the current date
       $tgl_presensi = Carbon::today();
- 
+
       // Set the jam_in to the current time
       $jam_in = Carbon::now()->addHours(7)->format('H:i:s');
- 
+
       // Find the Presensi record for the current date
-      $presensi = Presensi::where('tgl_presensi', $tgl_presensi)
-          ->where('nik', $nik)
-          ->first();
- 
-      if ($presensi) {
-          // Presensi record found, update the absenout fields
-          $presensi->lokasi_out = $lokasi_out;
-          $presensi->jam_out = Carbon::now()->addHours(7)->format('H:i:s');
-          $presensi->save();
+      //   $presensi = Presensi::where('tgl_presensi', $tgl_presensi)
+      //       ->where('nik', $nik)
+      //       ->first();
+
+        $presensi = Presensi::where('tgl_presensi', $tgl_presensi)
+        ->where('nik', $nik)
+        ->update([
+            'lokasi_out' => $lokasi_out,
+            'jam_out' => Carbon::now()->addHours(7)->format('H:i:s')
+        ]);
+
+      if ($presensi > 0) {
+          // Update successful, return a response indicating success
+          return response()->json(['message' => 'Absen keluar berhasil'], 201);
       } else {
-          // Presensi record not found, create a new one
+          // No matching Presensi records found, return an appropriate response
           return response()->json(['message' => 'Presensi not found for the given nik'], 404);
       }
- 
+
       // Return a response indicating success
       return response()->json(['message' => 'Absen keluar berhasil'], 201);
     }
